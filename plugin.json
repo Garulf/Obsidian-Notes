@@ -1,0 +1,12 @@
+{
+    "ID": "F0DC45CD032F438C9B900679BD9B117A",
+    "ActionKeyword": "ob",
+    "Name": "Obsidian",
+    "Description": "Search Obsidian notes",
+    "Author": "Garulf",
+    "Version": "0.0.1",
+    "Language": "python",
+    "Website": "https://github.com/Garulf/obsidian",
+    "IcoPath": "./icon.png",
+    "ExecuteFileName": "run.py"
+}

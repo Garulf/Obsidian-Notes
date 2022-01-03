@@ -1,0 +1,41 @@
+name: Bump Manifest Version
+on:
+  release:
+    types: [published]
+jobs:
+  release:
+    name: Bump file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get release version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      - name: Get current version in file
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'plugin.json'
+          prop_path: 'Version'
+      - run: echo ${{steps.version.outputs.prop}}
+      - name: "Update plugin.json version to: ${{ env.VERSION }}"
+        if: ${{ steps.version.outputs.prop }} != ${{ env.VERSION }}
+        uses: jossef/action-set-json-field@v1
+        with:
+          file: plugin.json
+          field: Version
+          value: ${{ env.VERSION }}
+      - name: Commit version change
+        if: ${{ steps.version.outputs.prop }} != ${{ env.VERSION }}
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add ./plugin.json
+          git commit -m "Match release version: ${{ env.VERSION }}"
+      - name: Push changes
+        if: ${{ steps.version.outputs.prop }} != ${{ env.VERSION }}
+        uses: ad-m/github-push-action@v0.6.0
+        continue-on-error: true
+        with:
+          branch: main
+          github_token: ${{ github.token }}
