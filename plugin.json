@@ -1,12 +1,12 @@
 {
-    "ID": "F0DC45CD032F438C9B900679BD9B117A",
-    "ActionKeyword": "ob",
-    "Name": "Obsidian Notes",
-    "Description": "Search Obsidian notes",
-    "Author": "Garulf",
-    "Version": "1.0.0",
-    "Language": "python",
-    "Website": "https://github.com/Garulf/obsidian-notes",
-    "IcoPath": "./icon.png",
-    "ExecuteFileName": "run.py"
+  "ID": "F0DC45CD032F438C9B900679BD9B117A",
+  "ActionKeyword": "ob",
+  "Name": "Obsidian Notes",
+  "Description": "Search Obsidian notes",
+  "Author": "Garulf",
+  "Version": "1.0.0",
+  "Language": "python",
+  "Website": "https://github.com/Garulf/obsidian-notes",
+  "IcoPath": "./icon.png",
+  "ExecuteFileName": "run.py"
 }
