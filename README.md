@@ -1,0 +1,2 @@
+# Obsidian
+Search Obsidian notes
