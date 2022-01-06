@@ -4,7 +4,7 @@
     "Name": "Obsidian",
     "Description": "Search Obsidian notes",
     "Author": "Garulf",
-    "Version": "0.0.1",
+    "Version": "1.0.0",
     "Language": "python",
     "Website": "https://github.com/Garulf/obsidian",
     "IcoPath": "./icon.png",
