@@ -10,8 +10,14 @@ def match(query, match):
 class Obsidian(Flox):
 
     def query(self, query):
-        vaults = obsidian.get_vaults()
-
+        try:
+            vaults = obsidian.get_vaults()
+        except FileNotFoundError:
+            self.add_item(
+                title='Obsidian not found',
+                subtitle='Please install Obsidian',
+            )
+            return
         for vault in vaults:
             for note in vault.notes():
                 title_score = match(query, note.title)
