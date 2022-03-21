@@ -1,0 +1,38 @@
+name: "PR-Packager"
+on:
+  workflow_dispatch:
+  pull_request:
+env:
+  PYTHON_VER: 3.8
+jobs:
+  deps:
+    name: "Build"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ env.PYTHON_VER }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VER }}
+      - uses: actions/cache@v2
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r ./requirements.txt -t ./lib
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: |
+            ./**
+            !./.git/
+            !./README.md/
+            !./.github/
+            !./assets/

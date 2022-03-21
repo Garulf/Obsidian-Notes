@@ -9,6 +9,8 @@ on:
       - .github/workflows/*
       - README.md
       - assets/*
+env:
+  PYTHON_VER: 3.8
 jobs:
   deps:
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -35,36 +37,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install -r ./requirements.txt -t ./lib
-      - name: Determine versioning
+      - name: Get Plugin's version
         id: version
-        uses: paulhatch/semantic-version@v4.0.1
-        with:
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          format: "${major}.${minor}.${patch}"
-          short_tags: false
-          bump_each_commit: false
-      - name: "Update plugin.json version to: ${{steps.version.outputs.prop}}"
-        uses: jossef/action-set-json-field@v1
-        with:
-          file: 'plugin.json'
-          field: Version
-          value: "${{steps.version.outputs.major}}.${{steps.version.outputs.minor}}.${{steps.version.outputs.patch}}"
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'plugin.json'
+          prop_path: 'Version'
       - name: Package files
         run: |
           git clone https://github.com/Garulf/flow_commands/ bin
           pip install -r ./bin/requirements.txt
           python ./bin/commands.py package -n "${{github.event.repository.name}}.zip"
-      - name: Delete previous drafts
-        uses: hugo19941994/delete-draft-releases@v0.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          draft: true
+          draft: false
           files: "./${{github.event.repository.name}}.zip"
-          tag_name: "v${{steps.version.outputs.version}}"
+          tag_name: "v${{steps.version.outputs.prop}}"
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
