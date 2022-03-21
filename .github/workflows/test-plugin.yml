@@ -1,0 +1,122 @@
+name: "Test Plugin"
+on:
+  pull_request: 
+  workflow_dispatch: 
+  push:
+    tags-ignore:
+      - 'v*'
+    paths-ignore: 
+      - .github/workflows/*
+      - README.md
+      - assets/*
+env:
+  PYTHON_VER: 3.8
+  BRANCH: 'main'
+jobs:
+  test_run:
+    name: "Test Run"
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        flow_tags: ['latest']
+        python_ver: ['3.8']
+    steps:
+      - name: Checkout Plugin Repo
+        uses: actions/checkout@v2
+        with:
+          path: ${{github.event.repository.name}}
+      - name: Get Plugin's version
+        if: ${{ github.ref != 'refs/heads/main' }}
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: './${{github.event.repository.name}}/plugin.json'
+          prop_path: 'Version'
+      - name: Assert Version updated
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          $release_ver = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/${{github.repository}}/main/plugin.json" | ConvertFrom-Json).Version
+          $release_ver = $release_ver -replace "v", "" 
+          $this_ver = "${{steps.version.outputs.prop}}"
+          echo "This version:" $this_ver
+          echo "Release version:" $release_ver
+          if ([System.Version]$this_ver -gt [System.Version]$release_ver) {
+            exit 0
+          } else {
+            exit 1
+          }
+      - name: Get latest Version tag
+        run: |
+          if ("${{matrix.flow_tags}}" -eq 'latest') {
+            $url = "https://api.github.com/repos/Flow-Launcher/Flow.Launcher/releases/latest"
+          } else {
+            $url = "https://api.github.com/repos/Flow-Launcher/Flow.Launcher/releases/tags/${{matrix.flow_tags}}"
+          }
+          $release = Invoke-WebRequest -Uri $url | ConvertFrom-Json
+          $tag_name = $release.tag_name
+          foreach ($asset in $release.assets)
+          {
+            if($asset.name -like '*setup.exe') {
+              $download_url = $asset.browser_download_url
+              $file_name = $asset.name
+              break
+            }
+          }
+          echo "DOWNLOAD_URL=$download_url" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          echo "FILE_NAME=$file_name" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          echo "TAG_NAME=$tag_name" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+      - name: Flow Launcher Cache
+        uses: actions/cache@v2
+        id: flow_cache
+        with:
+          path: |
+            ~\AppData\Roaming\FlowLauncher\*
+            !~\AppData\Roaming\FlowLauncher\Plugins\*
+            ~\AppData\Local\FlowLauncher\**
+          key: ${{ runner.os }}-flow-${{ env.TAG_NAME }}
+      - name: Download Flow Launcher
+        id: download
+        if: steps.flow_cache.outputs.cache-hit != 'true'
+        run: |
+          curl.exe -L -o ${{ env.FILE_NAME }} ${{ env.DOWNLOAD_URL }}
+      - name: Install Flow Launcher
+        if: steps.flow_cache.outputs.cache-hit != 'true'
+        run: .\${{ env.FILE_NAME }}
+        shell: cmd
+      - name: Move Plugin to plugins directory
+        run: |
+          $repo_path = Join-Path -Path $pwd -ChildPath ${{github.event.repository.name}}
+          $plugin_path = Join-Path -Path $env:APPDATA -ChildPath 'FlowLauncher' | Join-Path -ChildPath 'Plugins' | Join-Path -ChildPath ${{github.event.repository.name}}
+          if (Test-Path $plugin_path)
+          {
+            echo "Removing cached directory"
+            Remove-Item $plugin_path
+          }
+          New-Item -ItemType SymbolicLink -Path $plugin_path -Target $repo_path
+          echo "PLUGIN_PATH=$plugin_path" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python_ver }}
+      - uses: actions/cache@v2
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python_ver }}
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r ./requirements.txt -t ./lib
+      - name: Get Plugin's Execute file
+        id: exe
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: '${{ env.PLUGIN_PATH }}/plugin.json'
+          prop_path: 'ExecuteFileName'
+      - name: Test Run
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          python ${{steps.exe.outputs.prop}}
