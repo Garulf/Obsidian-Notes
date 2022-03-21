@@ -22,6 +22,25 @@ def get_vaults():
             vaults.append(Vault(vault, data['vaults'][vault]))
         return vaults
 
+def get_vault(id):
+    try:
+        with open(VAULTS_PATH, 'r') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        logger.error(f'{VAULTS_PATH} not found!\nIs obsidian installed?')
+        raise
+    else:
+        try:
+            return Vault(id, data['vaults'][id])
+        except KeyError:
+            logger.error(f'{id} not found!')
+            raise
+
+def get_note(vault_id, note_path):
+    vault = get_vault(vault_id)
+    return Note(vault, note_path)
+
+
 def open_note(vault_name, note_path):
     URI = f'open?vault={vault_name}&file={note_path}'.replace(' ', '%20').replace('/', '%2F').replace('\\', '%2F')
     URI = f'obsidian://{URI}'
