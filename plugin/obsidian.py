@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 
 VAULTS_FILE = 'obsidian.json'
 VAULTS_PATH = Path(os.getenv('APPDATA'), 'obsidian', VAULTS_FILE)
+CHECK_BOX = '- [ ]'
+MARKED_CHECK_BOX = '- [x]'
 
 def get_vaults():
     vaults = []
@@ -82,6 +84,35 @@ class Note(object):
     def content(self):
         with open(self.path, 'r') as f:
             return f.read()
+
+    def checklists(self):
+        checklists = []
+        title = ''
+        for line in self.content().splitlines():
+            if CHECK_BOX in line or MARKED_CHECK_BOX in line:
+                description = line.replace(CHECK_BOX, '').replace(MARKED_CHECK_BOX, '').strip()
+                if MARKED_CHECK_BOX in line:
+                    checked = True
+                else:
+                    checked = False
+                if (CHECK_BOX not in prev_line and MARKED_CHECK_BOX not in prev_line) and prev_line.endswith(':'):
+                    title = prev_line.replace(':', '').strip()
+                checklists.append(
+                    {
+                        'title': title,
+                        'description': description,
+                        'checked': checked,
+                        'raw': line
+                    }
+                )
+            else:
+                title = ''
+            prev_line = line
+        return checklists
+
+
+
+
 if __name__ == "__main__":
     vaults = get_vaults()
     for vault in vaults:
