@@ -4,6 +4,10 @@ from flox import Flox
 
 import obsidian
 
+CHECK_BOX_GLYPH = '\ue003'
+MARKED_CHECK_BOX_GLYPH = '\ue005'
+
+
 def match(query, match):
     return int(SM(lambda x: x == " ", query.lower().replace('\\', ' '), match.lower().replace('\\', ' '), autojunk=False).ratio() * 100)
 
@@ -30,10 +34,26 @@ class Obsidian(Flox):
                         method=self.open_note,
                         parameters=[vault.name, str(note.relative_path)],
                         score=score,
+                        context=[vault.id, str(note.path), note.checklists()]
                     )
 
     def context_menu(self, data):
-        pass
+        vault_id = data[0]
+        note_path = data[1]
+        for checks in data[2]:
+            self.add_item(
+                title=checks['description'],
+                subtitle=checks['title'],
+                glyph=MARKED_CHECK_BOX_GLYPH if checks['checked'] else CHECK_BOX_GLYPH,
+                method=self.toggle_checkbox,
+                parameters=[vault_id, note_path, checks['raw']],
+                dont_hide=True
+            )
+
+    def toggle_checkbox(self, vault_id, note_path, raw):
+        note = obsidian.get_note(vault_id, note_path)
+        note.toggle_checkbox(raw)
+
 
     def open_note(self, vault_name, note_path):
         obsidian.open_note(vault_name, note_path)
