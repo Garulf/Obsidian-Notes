@@ -79,6 +79,9 @@ class Note(object):
     def open_note(self):
         open_note(self.vault.name, self.relative_path)
 
+    def content(self):
+        with open(self.path, 'r') as f:
+            return f.read()
 if __name__ == "__main__":
     vaults = get_vaults()
     for vault in vaults:
