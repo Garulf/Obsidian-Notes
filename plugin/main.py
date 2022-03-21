@@ -27,6 +27,7 @@ class Obsidian(Flox):
                     self.add_item(
                         title=note.title,
                         subtitle=str(note.vault_path),
+                        icon=self.icon,
                         method=self.open_note,
                         parameters=[vault.name, str(note.relative_path)],
                         score=score,
