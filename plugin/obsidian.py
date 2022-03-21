@@ -61,6 +61,11 @@ class Vault(object):
             notes.append(Note(self, note))
         return notes
 
+    def note(self, note_path):
+        for note in self.notes():
+            if str(note.relative_path) == note_path:
+                return note
+
 
 class Note(object):
 
