@@ -85,6 +85,20 @@ class Note(object):
         with open(self.path, 'r') as f:
             return f.read()
 
+
+    def toggle_checkbox(self, raw):
+        content = self.content()
+        for line in content.splitlines():
+            if raw == line:
+                if MARKED_CHECK_BOX in line:
+                    toggled_line = line.replace(MARKED_CHECK_BOX, CHECK_BOX)
+                else:
+                    toggled_line = line.replace(CHECK_BOX, MARKED_CHECK_BOX)
+                break
+        content = content.replace(line, toggled_line)
+        with open(self.path, 'w') as f:
+            f.write(content)
+
     def checklists(self):
         checklists = []
         title = ''
