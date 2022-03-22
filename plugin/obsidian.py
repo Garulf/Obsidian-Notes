@@ -14,7 +14,7 @@ MARKED_CHECK_BOX = '- [x]'
 def get_vaults():
     vaults = []
     try:
-        with open(VAULTS_PATH, 'r', encoding='utf-8') as f:
+        with open(VAULTS_PATH, 'r', encoding='utf-8', errors='replace') as f:
             data = json.load(f)
     except FileNotFoundError:
         logger.error(f'{VAULTS_PATH} not found!\nIs obsidian installed?')
@@ -26,7 +26,7 @@ def get_vaults():
 
 def get_vault(id):
     try:
-        with open(VAULTS_PATH, 'r', encoding='utf-8') as f:
+        with open(VAULTS_PATH, 'r', encoding='utf-8', errors='replace') as f:
             data = json.load(f)
     except FileNotFoundError:
         logger.error(f'{VAULTS_PATH} not found!\nIs obsidian installed?')
@@ -82,7 +82,7 @@ class Note(object):
         open_note(self.vault.name, self.relative_path)
 
     def content(self):
-        with open(self.path, 'r', encoding='utf-8') as f:
+        with open(self.path, 'r', encoding='utf-8', errors='replace') as f:
             return f.read()
 
 
@@ -96,7 +96,7 @@ class Note(object):
                     toggled_line = line.replace(CHECK_BOX, MARKED_CHECK_BOX)
                 break
         content = content.replace(line, toggled_line)
-        with open(self.path, 'w', encoding='utf-8') as f:
+        with open(self.path, 'w', encoding='utf-8', errors='replace') as f:
             f.write(content)
 
     def checklists(self):
