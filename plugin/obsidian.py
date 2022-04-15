@@ -102,6 +102,7 @@ class Note(object):
     def checklists(self):
         checklists = []
         title = ''
+        prev_line = ''
         for line in self.content().splitlines():
             if CHECK_BOX in line or MARKED_CHECK_BOX in line:
                 description = line.replace(CHECK_BOX, '').replace(MARKED_CHECK_BOX, '').strip()
