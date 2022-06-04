@@ -1,1 +1,0 @@
-git+https://github.com/garulf/flox@v0.11.1#egg=flox-lib
