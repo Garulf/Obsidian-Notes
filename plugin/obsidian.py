@@ -21,9 +21,7 @@ def get_vaults():
         logger.error(f"{VAULTS_PATH} not found!\nIs obsidian installed?")
         raise
     else:
-        for vault in data["vaults"].keys():
-            vaults.append(Vault(vault, data["vaults"][vault]))
-        return vaults
+        return (Vault(vault_id, vault) for vault_id, vault in data["vaults"].items())
 
 
 def get_vault(id):

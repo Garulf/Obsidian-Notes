@@ -39,7 +39,7 @@ class Obsidian(Flox):
                 title_score = match(query, note.title)
                 subtitle_score = match(query, str(note.vault_path))
                 score = max(title_score, subtitle_score)
-                if line := note.contains_str(query):
+                if query and (line := note.contains_str(query)):
                     self.add_item(
                         title=note.title,
                         subtitle=f"Line {line[0]}: {line[1]}",
