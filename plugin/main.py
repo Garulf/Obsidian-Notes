@@ -8,10 +8,6 @@ CHECK_BOX_GLYPH = "\ue003"
 MARKED_CHECK_BOX_GLYPH = "\ue005"
 
 
-def isInNote(query, note):
-    pass
-
-
 def match(query, match):
     return int(
         SM(
