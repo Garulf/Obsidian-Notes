@@ -1,6 +1,7 @@
 import os
 import json
 from pathlib import Path
+import urllib.parse
 import webbrowser
 import logging
 
@@ -44,8 +45,9 @@ def get_note(vault_id, note_path):
 
 
 def open_note(vault_name, note_path):
-    URI = f'open?vault={vault_name}&file={note_path}'.replace(' ', '%20').replace('/', '%2F').replace('\\', '%2F')
-    URI = f'obsidian://{URI}'
+    vault_name = urllib.parse.quote(vault_name)
+    note_path = urllib.parse.quote(note_path)
+    URI = f'obsidian://open?vault={vault_name}&file={note_path}'
     webbrowser.open(URI)
 
 class Vault(object):
