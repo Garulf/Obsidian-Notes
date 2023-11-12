@@ -42,7 +42,6 @@ def get_note(vault_id, note_path):
     vault = get_vault(vault_id)
     return Note(vault, note_path)
 
-
 def open_note(vault_name, note_path):
     URI = f'open?vault={vault_name}&file={note_path}'.replace(' ', '%20').replace('/', '%2F').replace('\\', '%2F')
     URI = f'obsidian://{URI}'
@@ -57,17 +56,14 @@ class Vault(object):
         for key, value in vault.items():
             setattr(self, key, value)
 
-    def notes(self):
+    def notes(self, excluded: set):
         notes = []
+
         for note in Path(self.path).glob('**/*.md'):
-            notes.append(Note(self, note))
+            if note not in excluded:
+                notes.append(Note(self, note))
+                
         return notes
-
-    def note(self, note_path):
-        for note in self.notes():
-            if str(note.relative_path) == note_path:
-                return note
-
 
 class Note(object):
 
@@ -125,13 +121,10 @@ class Note(object):
             prev_line = line
         return checklists
 
-
-
-
 if __name__ == "__main__":
     vaults = get_vaults()
     for vault in vaults:
-        for note in vault.notes():
+        for note in vault.notes(set()):
             print(note.title)
             open_note(vault.name, str(note.relative_path))
             break

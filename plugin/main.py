@@ -1,6 +1,7 @@
 from difflib import SequenceMatcher as SM
 
 from flox import Flox
+from pathlib import Path
 
 import obsidian
 
@@ -12,6 +13,16 @@ def match(query, match):
     return int(SM(lambda x: x == " ", query.lower().replace('\\', ' '), match.lower().replace('\\', ' '), autojunk=False).ratio() * 100)
 
 class Obsidian(Flox):
+        
+    def __init__(self):
+        super().__init__()
+
+        lines = self.settings.get("excluded_vault_paths").split("\n")
+        paths = [Path(line.strip()) for line in lines if line.strip()]
+
+        self.excluded_notes = set()
+        for p in paths:
+            self.excluded_notes.update(p for p in p.rglob("*.md"))
 
     def query(self, query):
         try:
@@ -22,8 +33,9 @@ class Obsidian(Flox):
                 subtitle='Please install Obsidian',
             )
             return
+
         for vault in vaults:
-            for note in vault.notes():
+            for note in vault.notes(self.excluded_notes):
                 title_score = match(query, note.title)
                 subtitle_score = match(query, str(note.vault_path))
                 score = max(title_score, subtitle_score)
