@@ -1,0 +1,6 @@
+body:
+  - type: textarea
+    attributes:
+      name: excluded_vault_paths
+      label: "Paths to be excluded from search."
+      description: "Exclude paths from being included in the search. One aboslute path per line."
