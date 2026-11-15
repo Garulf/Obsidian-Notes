@@ -12,7 +12,8 @@ Search the notes in your Obsidian vaults from Flow Launcher and open them in Obs
 ## Features
 
 * **Every vault at once.** Finds your vaults from Obsidian's own settings. Nothing to configure.
-* **Title or path.** Matches note titles and the folders they live in.
+* **Title or path.** Matches note titles and the folders they live in, ranked the way Flow Launcher ranks its own results.
+* **Skips the clutter.** Hidden folders such as `.trash` and `.obsidian` are left out, as they are in Obsidian.
 * **Opens in Obsidian.** `Enter` opens the note in the right vault.
 * **Checklists.** `Shift+Enter` lists a note's checkboxes. Select one to tick it off.
 
@@ -25,6 +26,8 @@ ob project
 ```
 
 ![Obsidian Notes search results in Flow Launcher](.github/assets/search-light.png#gh-light-mode-only)![Obsidian Notes search results in Flow Launcher](.github/assets/search-dark.png#gh-dark-mode-only)
+
+`ob` on its own lists every note. If you use Obsidian Notes as a global plugin, without a keyword, only matching notes are shown.
 
 ### Checklists
 
