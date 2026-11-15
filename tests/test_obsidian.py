@@ -1,3 +1,5 @@
+import os
+
 import obsidian
 import pytest
 
@@ -25,6 +27,23 @@ def test_notes_lists_markdown_files_recursively(vaults):
     vault = obsidian.get_vault("a1b2c3d4e5f60718")
     titles = sorted(note.title for note in vault.notes())
     assert titles == ["Garden Plan", "Shopping List"]
+
+
+def make_path_too_long_to_list(parent):
+    folder = os.open(str(parent), os.O_RDONLY)
+    for _ in range(18):
+        os.mkdir("d" * 250, dir_fd=folder)
+        child = os.open("d" * 250, os.O_RDONLY, dir_fd=folder)
+        os.close(folder)
+        folder = child
+    os.close(os.open("Deep.md", os.O_CREAT | os.O_WRONLY, dir_fd=folder))
+    os.close(folder)
+
+
+def test_folders_that_cannot_be_listed_are_skipped(vaults):
+    make_path_too_long_to_list(vaults["personal"])
+    vault = obsidian.get_vault("a1b2c3d4e5f60718")
+    assert sorted(note.title for note in vault.notes()) == ["Garden Plan", "Shopping List"]
 
 
 def test_note_paths_are_relative_to_the_vault(vaults):

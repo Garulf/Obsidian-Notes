@@ -61,7 +61,10 @@ class Vault:
         self.name = Path(self.path).name
 
     def notes(self) -> list[Note]:
-        return [Note(self, path) for path in Path(self.path).glob("**/*.md")]
+        notes = []
+        for folder, _, files in os.walk(self.path, followlinks=True):
+            notes.extend(Note(self, os.path.join(folder, name)) for name in files if name.lower().endswith(".md"))
+        return notes
 
     def note(self, note_path: str) -> Note | None:
         for note in self.notes():
