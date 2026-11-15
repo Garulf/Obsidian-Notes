@@ -1,0 +1,31 @@
+{
+  "keyword": "ob",
+  "query": "shopping list",
+  "icon": "../../data/icon.png",
+  "max_results": 4,
+  "selection": 1,
+  "results": [
+    {
+      "title": "Oat milk",
+      "subtitle": "Groceries",
+      "checkbox": "unchecked"
+    },
+    {
+      "title": "Coffee beans",
+      "subtitle": "Groceries",
+      "checkbox": "checked"
+    },
+    {
+      "title": "Sourdough",
+      "subtitle": "Groceries",
+      "checkbox": "unchecked"
+    },
+    {
+      "title": "Return bottles",
+      "subtitle": "Errands",
+      "checkbox": "unchecked"
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}

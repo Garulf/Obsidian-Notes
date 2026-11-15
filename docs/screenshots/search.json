@@ -1,0 +1,27 @@
+{
+  "keyword": "ob",
+  "query": "project",
+  "icon": "../../data/icon.png",
+  "max_results": 4,
+  "selection": 0,
+  "results": [
+    {
+      "title": "Project Roadmap",
+      "subtitle": "Work\\Projects\\Project Roadmap.md"
+    },
+    {
+      "title": "Garden Project",
+      "subtitle": "Personal\\Home\\Garden Project.md"
+    },
+    {
+      "title": "Project Ideas",
+      "subtitle": "Personal\\Project Ideas.md"
+    },
+    {
+      "title": "Weekly Review",
+      "subtitle": "Work\\Projects\\Weekly Review.md"
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}
