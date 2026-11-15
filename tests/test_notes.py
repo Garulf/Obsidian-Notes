@@ -24,6 +24,13 @@ def test_query_scores_the_best_match_highest(vaults):
     assert all(result["Score"] < found[0]["Score"] for result in found[1:])
 
 
+def test_a_note_containing_the_query_beats_a_short_unrelated_title(vaults):
+    (vaults["work"] / "ToDo.md").write_text("", encoding="utf-8")
+    (vaults["work"] / "After Effects tips and shortcuts.md").write_text("", encoding="utf-8")
+    found = sorted(results("query", "tips"), key=lambda result: -result["Score"])
+    assert [result["Title"] for result in found] == ["After Effects tips and shortcuts"]
+
+
 def test_query_drops_notes_that_do_not_match(vaults):
     assert results("query", "qqq") == []
 
@@ -31,7 +38,7 @@ def test_query_drops_notes_that_do_not_match(vaults):
 def test_query_matches_the_path_inside_the_vault(vaults):
     found = {result["Title"]: result["Score"] for result in results("query", "personal/projects")}
     assert "Garden Plan" in found
-    assert found["Garden Plan"] > notes.MIN_SCORE
+    assert found["Garden Plan"] > 0
 
 
 def test_note_result_opens_the_note_in_its_vault(vaults, keyword):

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from difflib import SequenceMatcher
 from pathlib import Path
 
 from pyflowlauncher import Plugin, Result
 from pyflowlauncher.models.result import Glyph, PreviewInfo
+from pyflowlauncher.string_matcher import string_matcher
 
 import obsidian
 from launcher import KEEP_OPEN, ObsidianLauncher
@@ -17,19 +17,13 @@ ICON = str(Path(__file__).resolve().parent.parent / "icon.png")
 GLYPH_FONT = "/Resources/#Segoe Fluent Icons"
 CHECK_BOX_GLYPH = "\ue003"
 MARKED_CHECK_BOX_GLYPH = "\ue005"
-MIN_SCORE = 20
 
 plugin = Plugin(launcher=ObsidianLauncher())
 
 
 def match(query: str, text: str) -> int:
-    matcher = SequenceMatcher(
-        lambda x: x == " ",
-        query.lower().replace("\\", " "),
-        text.lower().replace("\\", " "),
-        autojunk=False,
-    )
-    return int(matcher.ratio() * 100)
+    result = string_matcher(query.replace("\\", " "), text.replace("\\", " "))
+    return result.score if result.matched else 0
 
 
 def make_result(title: str, subtitle: str = "", **kwargs) -> Result:
@@ -59,7 +53,7 @@ def search(query: str) -> list[Result]:
     for vault in vaults:
         for note in vault.notes():
             score = max(match(query, note.title), match(query, str(note.vault_path)))
-            if score > MIN_SCORE or query == "":
+            if score or query == "":
                 results.append(note_result(vault, note, score))
     return results
 
