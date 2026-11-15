@@ -31,10 +31,13 @@ def make_result(title: str, subtitle: str = "", **kwargs) -> Result:
     return Result(title=title, subtitle=subtitle, icon=ICON, preview=preview, **kwargs)
 
 
+def has_action_keyword() -> bool:
+    return plugin.launcher.action_keyword not in ("", "*")
+
+
 def autocomplete(title: str) -> str:
-    keyword = plugin.launcher.action_keyword
-    if keyword and keyword != "*":
-        return f"{keyword} {title}"
+    if has_action_keyword():
+        return f"{plugin.launcher.action_keyword} {title}"
     return title
 
 
@@ -45,6 +48,9 @@ async def query(query: str):
 
 
 def search(query: str) -> list[Result]:
+    list_all = query == "" and has_action_keyword()
+    if query == "" and not list_all:
+        return []
     try:
         vaults = obsidian.get_vaults()
     except FileNotFoundError:
@@ -53,7 +59,7 @@ def search(query: str) -> list[Result]:
     for vault in vaults:
         for note in vault.notes():
             score = max(match(query, note.title), match(query, str(note.vault_path)))
-            if score or query == "":
+            if score or list_all:
                 results.append(note_result(vault, note, score))
     return results
 

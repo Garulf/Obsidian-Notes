@@ -12,9 +12,15 @@ def results(method, *params):
     return call(method, *params)["Result"]
 
 
-def test_empty_query_lists_every_note(vaults):
+def test_empty_query_lists_every_note(vaults, keyword):
     titles = sorted(result["Title"] for result in results("query", ""))
     assert titles == ["Garden Plan", "Meeting Notes", "Shopping List"]
+
+
+def test_global_queries_only_show_matching_notes(vaults):
+    assert results("query", "") == []
+    assert results("query", "chrome") == []
+    assert [result["Title"] for result in results("query", "meeting")] == ["Meeting Notes"]
 
 
 def test_query_scores_the_best_match_highest(vaults):
