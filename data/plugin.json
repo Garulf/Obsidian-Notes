@@ -5,8 +5,8 @@
   "Description": "Search Obsidian notes",
   "Author": "Garulf",
   "Version": "1.1.4",
-  "Language": "python",
-  "Website": "https://github.com/Garulf/obsidian-notes",
-  "IcoPath": "./icon.png",
+  "Language": "python_v2",
+  "Website": "https://github.com/Garulf/Obsidian-Notes",
+  "IcoPath": "icon.png",
   "ExecuteFileName": "run.py"
 }
