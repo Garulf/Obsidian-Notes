@@ -62,7 +62,8 @@ class Vault:
 
     def notes(self) -> list[Note]:
         notes = []
-        for folder, _, files in os.walk(self.path, followlinks=True):
+        for folder, subfolders, files in os.walk(self.path, followlinks=True):
+            subfolders[:] = [name for name in subfolders if not name.startswith(".")]
             notes.extend(Note(self, os.path.join(folder, name)) for name in files if name.lower().endswith(".md"))
         return notes
 

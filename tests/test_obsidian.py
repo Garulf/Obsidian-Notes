@@ -29,6 +29,16 @@ def test_notes_lists_markdown_files_recursively(vaults):
     assert titles == ["Garden Plan", "Shopping List"]
 
 
+def test_hidden_folders_are_not_searched(vaults):
+    personal = vaults["personal"]
+    (personal / ".trash").mkdir()
+    (personal / ".trash" / "Deleted.md").write_text("", encoding="utf-8")
+    (personal / ".obsidian" / "plugins" / "quiet-outline").mkdir(parents=True)
+    (personal / ".obsidian" / "plugins" / "quiet-outline" / "README.md").write_text("", encoding="utf-8")
+    vault = obsidian.get_vault("a1b2c3d4e5f60718")
+    assert sorted(note.title for note in vault.notes()) == ["Garden Plan", "Shopping List"]
+
+
 def make_path_too_long_to_list(parent):
     folder = os.open(str(parent), os.O_RDONLY)
     for _ in range(18):
