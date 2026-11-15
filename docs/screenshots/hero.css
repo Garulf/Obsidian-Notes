@@ -1,0 +1,75 @@
+/* flow-render-canvas: 1500x500 */
+/* README banner: plugin name on the left, an enlarged launcher window cut off at the bottom right. */
+
+/* Google Fonts (latin subset); @font-face rather than @import, which only works at the top of a stylesheet */
+@font-face {
+    font-family: 'Inter';
+    font-weight: 700;
+    font-display: block;
+    src: url(https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiA.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-weight: 400;
+    font-display: block;
+    src: url(https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTOlOV.woff2) format('woff2');
+}
+html,
+body {
+    margin: 0;
+    width: 1500px;
+    height: 500px;
+    overflow: hidden;
+}
+
+body {
+    position: relative;
+}
+
+/* on the wrapper rather than body, which would paint the whole canvas and hide the rounded corners */
+body > div {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background:
+        radial-gradient(ellipse 900px 420px at 88% -10%, rgba(124, 58, 237, 0.30), transparent 70%),
+        linear-gradient(135deg, #121214 0%, #1b1c20 100%);
+}
+
+body::before,
+body::after {
+    position: absolute;
+    z-index: 1;
+    left: 80px;
+    color: #ffffff;
+}
+
+body::before {
+    content: "obsidian-notes";
+    top: 160px;
+    font: 700 64px 'Inter', sans-serif;
+}
+
+body::after {
+    content: "search your Obsidian vaults";
+    top: 252px;
+    color: #b8b8bc;
+    font: 20px 'JetBrains Mono', monospace;
+}
+
+#Preview {
+    position: absolute;
+    left: 620px;
+    top: 48px;
+    display: block;
+    width: auto;
+    height: auto;
+    transform: scale(1.5);
+    transform-origin: top left;
+}
+
+#WindowBorder {
+    margin: 0;
+}

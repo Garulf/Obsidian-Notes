@@ -1,0 +1,19 @@
+# readwright configuration. All keys are optional; autodetected values are shown.
+# Run `readwright badges` / `readwright blocks` to list badge presets and template blocks.
+template: docs/README.md.j2
+project:
+  name: Obsidian Notes
+  owner: Garulf
+  repo: Obsidian-Notes
+  tagline: Search the notes in your Obsidian vaults from Flow Launcher and open them in Obsidian.
+  ci_workflow: tests.yml
+banner:
+  image: .github/assets/hero.png
+  alt: Obsidian Notes hero image
+screenshots:
+  dir: .github/assets
+badges: [ci, github-release]
+donate: [buymeacoffee, github-sponsors]
+donate_handles:
+  buymeacoffee: garulf
+  github-sponsors: Garulf

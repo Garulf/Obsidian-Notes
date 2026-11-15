@@ -1,0 +1,69 @@
+{% extends "base.md.j2" %}
+
+{% block badges_extra %} [![Downloads](https://img.shields.io/github/downloads/{{ project.owner }}/{{ project.repo }}/total)]({{ project.url }}/releases/latest){% endblock %}
+
+{% block usage %}
+## Features
+
+* **Every vault at once.** Finds your vaults from Obsidian's own settings. Nothing to configure.
+* **Title or path.** Matches note titles and the folders they live in, ranked the way Flow Launcher ranks its own results.
+* **Skips the clutter.** Hidden folders such as `.trash` and `.obsidian` are left out, as they are in Obsidian.
+* **Opens in Obsidian.** `Enter` opens the note in the right vault.
+* **Checklists.** `Shift+Enter` lists a note's checkboxes. Select one to tick it off.
+
+## Usage
+
+Type `ob` followed by part of a note's title or path, then press `Enter` to open it in Obsidian:
+
+```
+ob project
+```
+
+{{ screenshot("search", alt="Obsidian Notes search results in Flow Launcher") }}
+
+`ob` on its own lists every note. If you use Obsidian Notes as a global plugin, without a keyword, only matching notes are shown.
+
+### Checklists
+
+Open the context menu (`Shift+Enter` or right-click) on a note to see its `- [ ]` checkboxes,
+grouped under the line that introduces them. Select an item to check or uncheck it in the note:
+
+{{ screenshot("checklist", alt="A note's checklist in the Flow Launcher context menu") }}
+
+## Installation
+
+### Flow Launcher
+
+In Flow Launcher, type:
+
+```
+pm install obsidian notes
+```
+
+{{ screenshot("install", alt="Flow Launcher plugin manager installing Obsidian Notes") }}
+
+### Manual installation
+
+Download `Obsidian-Notes-<version>.zip` from the [latest release]({{ project.url }}/releases/latest) and unzip it into
+`%appdata%\FlowLauncher\Plugins`, then restart Flow Launcher.
+
+Pre-releases of the next version are published from the open release PR on the
+[releases page]({{ project.url }}/releases) for testing. Flow Launcher won't offer them as updates.
+
+## Requirements
+
+* [Obsidian](https://obsidian.md) desktop app, with at least one vault opened
+* Flow Launcher 1.17.0 or newer
+* Python 3.8 or newer, which Flow Launcher can install for you
+
+## Changelog
+
+{{ changelog(3) }}
+
+See [CHANGELOG.md](CHANGELOG.md) for the full history.
+{% endblock %}
+
+{% block screenshots %}{% endblock %}
+{% block install %}{% endblock %}
+{% block contributing %}{% endblock %}
+{% block license %}{% endblock %}
