@@ -37,6 +37,14 @@ def test_a_note_containing_the_query_beats_a_short_unrelated_title(vaults):
     assert [result["Title"] for result in found] == ["After Effects tips and shortcuts"]
 
 
+def test_query_does_not_open_notes(vaults, monkeypatch):
+    def unreadable(self):
+        raise PermissionError(13, "Permission denied", str(self.path))
+
+    monkeypatch.setattr("obsidian.Note.content", unreadable)
+    assert [result["Title"] for result in results("query", "shopping list")] == ["Shopping List"]
+
+
 def test_query_drops_notes_that_do_not_match(vaults):
     assert results("query", "qqq") == []
 
