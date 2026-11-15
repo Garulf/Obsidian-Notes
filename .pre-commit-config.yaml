@@ -1,0 +1,30 @@
+default_install_hook_types: [pre-commit, pre-push]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+      - id: check-shebang-scripts-are-executable
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/Garulf/readwright
+    rev: v0.5.0
+    hooks:
+      - id: readwright-check
+        files: ^(README\.md|docs/README\.md\.j2|readme\.yaml|CHANGELOG\.md|\.github/assets/.*)$
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: uv run --no-project --with-requirements requirements-dev.txt pytest -q
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
